@@ -26,21 +26,72 @@ weatherForm.addEventListener("submit", async event =>{
 
 });
 
-async function getWeatherData(city){
-    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
+async function getWeatherData(city) {
+    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
     const response = await fetch(apiUrl);
-    if (!response.ok){
-        throw new Error("could not fetch weather data");
-
+    
+    console.log("Response status:", response.status);
+    
+    if (!response.ok) {
+        throw new Error("City not found. Please check the spelling.");
     }
-    return await response.json();
+    
+    const data = await response.json();
+    console.log("Weather Data:", data);
+    return data; // ← THIS LINE IS CRITICAL - Make sure it's here!
 }
 
 function displayWeatherInfo(data){
 
+    const {name:city, 
+            main:{temp,humidity},
+            weather:[{description,id}]} =data;
+    card.textContent="";
+    card.style.display = "flex";
+    const cityDisplay = document.createElement("h1");
+    const tempDisplay = document.createElement("p");
+    const humidityDisplay = document.createElement("p");
+    const descDisplay = document.createElement("p");
+    const weatherEmoji = document.createElement("p");
+
+    cityDisplay.textContent = city;
+    tempDisplay.textContent = `${((temp - 273.14)* (9/5) + 32).toFixed(1)}°F`;
+    humidityDisplay.textContent = `Humidity: ${humidity}`;
+    descDisplay.textContent = description;
+    weatherEmoji.textContent = getWeatherEmoji(id);
+
+
+    cityDisplay.classList.add("cityDisplay");
+    tempDisplay.classList.add("tempDisplay");
+    humidityDisplay.classList.add("humidityDisplay");
+    descDisplay.classList.add("descDisplay");
+    weatherEmoji.classList.add("weatherEmoji");
+
+    card.appendChild(cityDisplay);
+    card.appendChild(tempDisplay);
+    card.appendChild(humidityDisplay);
+    card.appendChild(descDisplay);
+    card.appendChild(weatherEmoji);
 }
 
-function getWeatherData(weatherId){
+function getWeatherEmoji(weatherId){
+    
+    switch(true){
+        case(weatherId >= 200 && weatherId<300):
+            return "snow";
+        case(weatherId >= 300 && weatherId<400):
+            return "snow";
+        case(weatherId >= 500 && weatherId<600):
+            return "rain";
+        case(weatherId >= 700 && weatherId<800):
+            return "wind";
+        case(weatherId === 800):
+            return "sun";
+        case(weatherId >= 801 && weatherId<810):
+            return "cloud";
+        default:
+            return "?";
+    }
 
 }
 
