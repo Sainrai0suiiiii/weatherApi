@@ -54,6 +54,18 @@ body::before {
     justify-content: center;
     position: relative;
     z-index: 1;
+    animation: slideDown 0.6s ease-out;
+}
+
+@keyframes slideDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .cityInput {
@@ -70,6 +82,18 @@ body::before {
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     outline: none;
+    animation: fadeIn 0.8s ease-out 0.2s both;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .cityInput::placeholder {
@@ -103,6 +127,7 @@ button[type="submit"] {
     position: relative;
     overflow: hidden;
     letter-spacing: 0.5px;
+    animation: fadeIn 0.8s ease-out 0.4s both;
 }
 
 button[type="submit"]::before {
@@ -129,6 +154,32 @@ button[type="submit"]:active {
     transform: scale(0.95) translateY(0);
 }
 
+/* Loading animation for button */
+button[type="submit"].loading {
+    position: relative;
+    color: transparent;
+    pointer-events: none;
+}
+
+button[type="submit"].loading::after {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
 /* ===== CARD ===== */
 .card {
     background: rgba(255, 255, 255, 0.08);
@@ -141,14 +192,29 @@ button[type="submit"]:active {
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
     min-width: 340px;
     max-width: 500px;
-    display: flex;
+    display: none;
     flex-direction: column;
     align-items: center;
     position: relative;
     z-index: 1;
     border: 1px solid rgba(255, 255, 255, 0.05);
-    animation: cardFloat 6s ease-in-out infinite;
+    animation: scaleIn 0.6s ease-out 0.3s both;
     transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card[style*="display: flex"] {
+    animation: scaleIn 0.6s ease-out 0.3s both;
+}
+
+@keyframes scaleIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .card:hover {
@@ -158,26 +224,50 @@ button[type="submit"]:active {
         inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
+/* Card float animation */
+.card.floating {
+    animation: cardFloat 6s ease-in-out infinite;
+}
+
 @keyframes cardFloat {
     0%, 100% { transform: translateY(0px); }
     50% { transform: translateY(-8px); }
 }
 
+/* Card update animation */
+.card.update {
+    animation: cardUpdate 0.5s ease-out;
+}
+
+@keyframes cardUpdate {
+    0% {
+        transform: scale(0.95);
+        opacity: 0.5;
+    }
+    50% {
+        transform: scale(1.02);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
 /* Card gradient overlay based on weather (dynamic via JS) */
 .card[data-weather="clear"] {
-    background: linear-gradient(135deg, rgba(255, 200, 100, 0.2), rgba(100, 200, 255, 0.2));
+    background: linear-gradient(135deg, rgba(255, 200, 100, 0.25), rgba(100, 200, 255, 0.25));
 }
 .card[data-weather="clouds"] {
-    background: linear-gradient(135deg, rgba(200, 200, 210, 0.2), rgba(150, 150, 180, 0.2));
+    background: linear-gradient(135deg, rgba(200, 200, 210, 0.25), rgba(150, 150, 180, 0.25));
 }
 .card[data-weather="rain"] {
-    background: linear-gradient(135deg, rgba(100, 150, 200, 0.25), rgba(50, 80, 150, 0.25));
+    background: linear-gradient(135deg, rgba(100, 150, 200, 0.3), rgba(50, 80, 150, 0.3));
 }
 .card[data-weather="snow"] {
-    background: linear-gradient(135deg, rgba(220, 240, 255, 0.2), rgba(180, 210, 240, 0.2));
+    background: linear-gradient(135deg, rgba(220, 240, 255, 0.25), rgba(180, 210, 240, 0.25));
 }
 .card[data-weather="thunderstorm"] {
-    background: linear-gradient(135deg, rgba(80, 80, 120, 0.3), rgba(40, 40, 80, 0.3));
+    background: linear-gradient(135deg, rgba(80, 80, 120, 0.35), rgba(40, 40, 80, 0.35));
 }
 
 /* ===== TYPOGRAPHY ===== */
@@ -214,6 +304,23 @@ button[type="submit"]:active {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    transition: all 0.3s ease;
+}
+
+/* Temperature glow animation */
+.tempDisplay.temp-glow {
+    animation: tempGlow 0.8s ease-out;
+}
+
+@keyframes tempGlow {
+    0%, 100% { 
+        text-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+        transform: scale(1);
+    }
+    50% { 
+        text-shadow: 0 4px 50px rgba(255, 200, 100, 0.4);
+        transform: scale(1.05);
+    }
 }
 
 .weatherEmoji {
@@ -221,6 +328,7 @@ button[type="submit"]:active {
     margin: 5px 0 10px;
     filter: drop-shadow(0 8px 30px rgba(0, 0, 0, 0.2));
     animation: emojiFloat 3s ease-in-out infinite;
+    transition: all 0.3s ease;
 }
 
 @keyframes emojiFloat {
@@ -277,6 +385,11 @@ button[type="submit"]:active {
     flex-direction: column;
     align-items: center;
     gap: 4px;
+    transition: all 0.3s ease;
+}
+
+.weatherDetails .detail:hover {
+    transform: scale(1.1);
 }
 
 .weatherDetails .detail .label {
@@ -305,10 +418,92 @@ button[type="submit"]:active {
     border: 1px solid rgba(255, 70, 70, 0.2);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    animation: shake 0.6s ease-out, textReveal 0.8s ease-out 0.3s both;
+    transition: opacity 0.5s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+    20%, 40%, 60%, 80% { transform: translateX(10px); }
+}
+
+@keyframes textReveal {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== STAGGERED CARD ELEMENT ANIMATIONS ===== */
+.card > * {
+    opacity: 0;
+    animation: fadeUp 0.6s ease-out forwards;
+}
+
+.card .cityDisplay { animation-delay: 0.8s; }
+.card .weatherEmoji { animation-delay: 1.0s; }
+.card .tempDisplay { animation-delay: 1.2s; }
+.card .descDisplay { animation-delay: 1.4s; }
+.card .humidityDisplay { animation-delay: 1.6s; }
+.card .weatherDetails { animation-delay: 1.8s; }
+
+@keyframes fadeUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== LOADING PULSE ===== */
+.loading-pulse {
+    animation: pulseGlow 1.5s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+    0%, 100% { 
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    50% { 
+        box-shadow: 0 20px 80px rgba(102, 126, 234, 0.4), 0 0 60px rgba(102, 126, 234, 0.1);
+    }
+}
+
+/* ===== INPUT PROGRESS INDICATOR ===== */
+.cityInput {
+    --input-progress: 0;
+    position: relative;
+}
+
+.cityInput::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: calc(var(--input-progress) * 100%);
+    height: 2px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    transition: width 0.3s ease;
+    border-radius: 2px;
 }
 
 /* ===== RESPONSIVE ===== */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
+    .weatherForm {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+        max-width: 400px;
+    }
+    
     .cityInput {
         width: 100%;
         font-size: 1rem;
@@ -325,6 +520,7 @@ button[type="submit"]:active {
         padding: 35px 25px;
         min-width: unset;
         width: 100%;
+        max-width: 400px;
         border-radius: 24px;
     }
     
@@ -343,15 +539,30 @@ button[type="submit"]:active {
     .weatherDetails {
         gap: 20px;
     }
+    
+    .errorDisplay {
+        font-size: 1.4rem;
+        padding: 15px 25px;
+    }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    
     .card {
         padding: 25px 15px;
+        border-radius: 20px;
     }
     
     .cityDisplay {
         font-size: 2rem;
+    }
+    
+    .cityDisplay::after {
+        width: 40px;
+        height: 2px;
     }
     
     .tempDisplay {
@@ -360,5 +571,114 @@ button[type="submit"]:active {
     
     .weatherEmoji {
         font-size: 3.5rem;
+    }
+    
+    .descDisplay {
+        font-size: 1.1rem;
+        padding: 4px 16px;
+    }
+    
+    .humidityDisplay {
+        font-size: 0.9rem;
+        padding: 6px 16px;
+    }
+    
+    .weatherDetails {
+        gap: 15px;
+    }
+    
+    .weatherDetails .detail .value {
+        font-size: 0.9rem;
+    }
+    
+    .weatherDetails .detail .label {
+        font-size: 0.6rem;
+    }
+    
+    .errorDisplay {
+        font-size: 1.2rem;
+        padding: 12px 20px;
+    }
+    
+    button[type="submit"].loading::after {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+/* ===== DARK THEME SUPPORT ===== */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: linear-gradient(135deg, #0a0a1a, #1a1a2e, #16213e);
+    }
+}
+
+/* ===== ACCESSIBILITY ===== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .card.floating {
+        animation: none;
+    }
+}
+
+/* ===== SCROLLBAR STYLING ===== */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #764ba2, #667eea);
+}
+
+/* ===== SELECTION STYLING ===== */
+::selection {
+    background: rgba(102, 126, 234, 0.4);
+    color: #fff;
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+    body {
+        background: #fff !important;
+        padding: 20px;
+    }
+    
+    .card {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+        background: #fff !important;
+    }
+    
+    .cityDisplay,
+    .tempDisplay,
+    .descDisplay,
+    .humidityDisplay,
+    .weatherDetails .detail .value {
+        color: #333 !important;
+    }
+    
+    .weatherEmoji {
+        filter: none !important;
+    }
+    
+    .weatherForm {
+        display: none !important;
     }
 }
